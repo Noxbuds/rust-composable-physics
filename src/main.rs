@@ -3,9 +3,11 @@ use opengl_graphics::{GlGraphics, OpenGL};
 use particle::{Particle, Vec2};
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
 use glutin_window::GlutinWindow;
+use constraints::gravity::Gravity;
 
 mod app;
 mod particle;
+mod constraints;
 
 fn main() {
     let opengl = OpenGL::V3_2;
@@ -31,6 +33,7 @@ fn main() {
         rotation: 0.0,
         particles,
         world_scale: scale,
+        constraints: vec![Box::new(Gravity {})],
     };
 
     

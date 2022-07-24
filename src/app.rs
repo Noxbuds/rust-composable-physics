@@ -1,13 +1,14 @@
 use opengl_graphics::GlGraphics;
 use piston::{RenderArgs, UpdateArgs};
 
-use crate::particle::{Particle, Vec2};
+use crate::{particle::{Particle, Vec2}, constraints::PhysicsConstraint};
 
 pub struct App {
     pub gl: GlGraphics,
     pub rotation: f64,
     pub particles: Vec<Particle>,
     pub world_scale: f64,
+    pub constraints: Vec<Box<dyn PhysicsConstraint>>,
 }
 
 fn world_to_screen(world_scale: f64, world: Vec2) -> Vec2 {
@@ -38,10 +39,16 @@ impl App {
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
+        let particles_clone = self.particles.clone();
+
         for particle in &mut self.particles {
-            let gravity = Vec2 { x: 0.0, y: 20.0 };
-            particle.add_acceleration(gravity);
-            particle.update_position(args.dt);
+            for constraint in &self.constraints {
+                if constraint.allow(particle) {
+                    constraint.apply(particle, &particles_clone);
+                }
+
+                particle.update_position(args.dt);
+            }
         }
     }
 }

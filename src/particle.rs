@@ -4,6 +4,7 @@ pub struct Vec2 {
     pub y: f64,
 }
 
+#[derive(Clone, Copy)]
 pub struct Particle {
     pub old_position: Vec2,
     pub position: Vec2,
