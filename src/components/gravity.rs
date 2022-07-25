@@ -1,4 +1,5 @@
-use crate::particle::{Vec2, Particle};
+use crate::particle::{Particle};
+use crate::utils::Vec2;
 
 use super::PhysicsComponent;
 

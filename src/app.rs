@@ -1,7 +1,8 @@
 use opengl_graphics::GlGraphics;
 use piston::{RenderArgs, UpdateArgs};
 
-use crate::{particle::{Particle, Vec2}, components::PhysicsComponent};
+use crate::{particle::{Particle}, components::PhysicsComponent};
+use crate::utils::Vec2;
 
 pub struct App {
     pub gl: GlGraphics,

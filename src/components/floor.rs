@@ -5,7 +5,7 @@ pub struct Floor {
 }
 
 impl PhysicsComponent for Floor {
-    fn apply(&self, particle: &mut crate::particle::Particle, all_particles: &[crate::particle::Particle]) {
+    fn apply(&self, particle: &mut crate::particle::Particle, _all_particles: &[crate::particle::Particle]) {
         let edge_y = particle.position.y + particle.radius;
 
         if edge_y > self.y {

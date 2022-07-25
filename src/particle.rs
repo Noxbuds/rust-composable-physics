@@ -1,8 +1,4 @@
-#[derive(Clone, Copy)]
-pub struct Vec2 {
-    pub x: f64,
-    pub y: f64,
-}
+use crate::utils::Vec2;
 
 #[derive(Clone, Copy)]
 pub struct Particle {
