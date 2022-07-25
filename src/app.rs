@@ -43,7 +43,7 @@ impl App {
         for particle in &mut self.particles {
             for constraint in &self.components {
                 if constraint.allow(particle) {
-                    constraint.apply(particle, &particles_clone);
+                    constraint.apply(particle, &particles_clone, args.dt);
                 }
 
                 particle.update_position(args.dt);

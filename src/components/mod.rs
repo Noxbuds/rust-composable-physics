@@ -8,5 +8,5 @@ pub trait PhysicsComponent {
     fn allow(&self, _particle: &Particle) -> bool {
         true
     }
-    fn apply(&self, particle: &mut Particle, all_particles: &[Particle]);
+    fn apply(&self, particle: &mut Particle, all_particles: &[Particle], dt: f64);
 }

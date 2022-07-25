@@ -4,7 +4,7 @@ use particle::{Particle};
 use utils::Vec2;
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
 use glutin_window::GlutinWindow;
-use components::{gravity::Gravity, floor::Floor, circle_walls::CircleWalls};
+use components::{gravity::Gravity, circle_walls::CircleWalls};
 
 mod app;
 mod particle;
@@ -39,7 +39,6 @@ fn main() {
             Box::new(Gravity {
                 strength: Vec2 { x: 0.0, y: 40.0 }
             }), 
-            // Box::new(Floor { y: 270.0 }),
             Box::new(CircleWalls {
                 center: Vec2 {
                     x: 960.0 / scale,
