@@ -11,6 +11,7 @@ pub struct App {
     pub particles: Vec<Particle>,
     pub particle_channel: (Sender<Particle>, Receiver<Particle>),
     pub world_scale: f64,
+    pub sub_steps: i32,
     pub components: Vec<Box<dyn PhysicsComponent>>,
 }
 
@@ -43,13 +44,16 @@ impl App {
         let particles_clone = self.particles.clone();
         let (sender, receiver) = &self.particle_channel;
 
-        for particle in &mut self.particles {
-            for component in &self.components {
-                if component.allow(particle) {
-                    component.apply(particle, &particles_clone, args.dt);
+        let dt = args.dt / self.sub_steps as f64;
+        for _ in 0..self.sub_steps {
+            for (i, particle) in self.particles.iter_mut().enumerate() {
+                for component in &self.components {
+                    if component.allow(particle) {
+                        component.apply(particle, i, &particles_clone, dt);
+                    }
                 }
 
-                particle.update_position(args.dt);
+                particle.update_position(dt);
             }
         }
 

@@ -4,7 +4,7 @@ use opengl_graphics::{GlGraphics, OpenGL};
 use utils::Vec2;
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
 use glutin_window::GlutinWindow;
-use components::{gravity::Gravity, circle_walls::CircleWalls, spawner::Spawner};
+use components::{gravity::Gravity, circle_walls::CircleWalls, spawner::Spawner, collision::Collision};
 
 mod app;
 mod particle;
@@ -16,7 +16,7 @@ fn main() {
 
     let window_width = 1920;
     let window_height = 1080;
-    let world_scale: f64 = 4.0;
+    let world_scale: f64 = 1.0;
 
     let mut window: GlutinWindow = WindowSettings::new("Physics simulator", [window_width, window_height])
         .graphics_api(opengl)
@@ -29,30 +29,32 @@ fn main() {
         particles: Vec::new(),
         particle_channel: mpsc::channel(),
         world_scale,
+        sub_steps: 16,
         components: vec![
             Box::new(Gravity {
-                strength: Vec2 { x: 0.0, y: 40.0 }
+                strength: Vec2 { x: 0.0, y: 160.0 }
             }), 
             Box::new(CircleWalls {
                 center: Vec2 {
                     x: window_width as f64 * 0.5 / world_scale,
                     y: window_height as f64 * 0.5 / world_scale
                 },
-                radius: 60.0
+                radius: 320.0
             }),
             Box::new(Spawner::new(
-                100,
-                0.1,
+                2,
+                2.0,
                 Box::new(move |_| {
                     Vec2 {
-                        x: window_width as f64 * 0.5 / world_scale + 25.0,
-                        y: window_height as f64 * 0.5 / world_scale + 25.0
+                        x: window_width as f64 * 0.5 / world_scale + 280.0,
+                        y: window_height as f64 * 0.5 / world_scale
                     }
                 }),
                 Box::new(|_| {
-                    10.0
+                    40.0
                 })
             )),
+            // Box::new(Collision {})
         ],
     };
 
