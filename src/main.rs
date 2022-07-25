@@ -3,11 +3,11 @@ use opengl_graphics::{GlGraphics, OpenGL};
 use particle::{Particle, Vec2};
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
 use glutin_window::GlutinWindow;
-use constraints::{gravity::Gravity, floor::Floor};
+use components::{gravity::Gravity, floor::Floor};
 
 mod app;
 mod particle;
-mod constraints;
+mod components;
 
 fn main() {
     let opengl = OpenGL::V3_2;

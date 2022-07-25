@@ -1,7 +1,7 @@
 use opengl_graphics::GlGraphics;
 use piston::{RenderArgs, UpdateArgs};
 
-use crate::{particle::{Particle, Vec2}, constraints::PhysicsComponent};
+use crate::{particle::{Particle, Vec2}, components::PhysicsComponent};
 
 pub struct App {
     pub gl: GlGraphics,
@@ -29,8 +29,6 @@ impl App {
 
             for particle in &self.particles {
                 let position = world_to_screen(self.world_scale, particle.position);
-
-                // let transform = c.transform.trans(position.x, position.y);
                 
                 let rect = rectangle::square(position.x, position.y, particle.radius * self.world_scale);
                 ellipse(particle.color, rect, c.transform, gl);
