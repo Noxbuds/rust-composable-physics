@@ -3,7 +3,7 @@ use opengl_graphics::{GlGraphics, OpenGL};
 use particle::{Particle, Vec2};
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
 use glutin_window::GlutinWindow;
-use constraints::gravity::Gravity;
+use constraints::{gravity::Gravity, floor::Floor};
 
 mod app;
 mod particle;
@@ -33,7 +33,12 @@ fn main() {
         rotation: 0.0,
         particles,
         world_scale: scale,
-        constraints: vec![Box::new(Gravity {})],
+        components: vec![
+            Box::new(Gravity {
+                strength: Vec2 { x: 0.0, y: 40.0 }
+            }), 
+            Box::new(Floor { y: 270.0 })
+        ],
     };
 
     

@@ -1,12 +1,14 @@
 use crate::particle::{Vec2, Particle};
 
-use super::PhysicsConstraint;
+use super::PhysicsComponent;
 
-pub struct Gravity;
+pub struct Gravity {
+    pub strength: Vec2,
+}
 
-impl PhysicsConstraint for Gravity {
+impl PhysicsComponent for Gravity {
     fn apply(&self, particle: &mut Particle, _: &[Particle]) {
-        let acc = Vec2 { x: 0.0, y: 20.0 };
+        let acc = Vec2 { x: self.strength.x, y: self.strength.y };
         particle.add_acceleration(acc);
     }
 }

@@ -1,8 +1,9 @@
 use crate::particle::{Particle};
 
 pub mod gravity;
+pub mod floor;
 
-pub trait PhysicsConstraint {
+pub trait PhysicsComponent {
     fn allow(&self, particle: &Particle) -> bool {
         true
     }
