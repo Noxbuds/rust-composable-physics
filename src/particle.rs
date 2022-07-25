@@ -12,16 +12,14 @@ pub struct Particle {
 impl Particle {
     pub fn update_position(&mut self, dt: f64) {
         // verlet integration
-        let new_x = 2.0 * self.position.x - self.old_position.x + self.acceleration.x * dt * dt;
-        let new_y = 2.0 * self.position.y - self.old_position.y + self.acceleration.y * dt * dt;
+        let new_position = self.position * 2.0 - self.old_position + self.acceleration * dt * dt;
 
         self.old_position = self.position;
-        self.position = Vec2 { x: new_x, y: new_y };
+        self.position = new_position;
         self.acceleration = Vec2 { x: 0.0, y: 0.0 };
     }
 
     pub fn add_acceleration(&mut self, acc: Vec2) {
-        self.acceleration.x += acc.x;
-        self.acceleration.y += acc.y;
+        self.acceleration += acc;
     }
 }
