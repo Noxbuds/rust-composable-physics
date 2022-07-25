@@ -6,7 +6,6 @@ use crate::utils::Vec2;
 
 pub struct App {
     pub gl: GlGraphics,
-    pub rotation: f64,
     pub particles: Vec<Particle>,
     pub world_scale: f64,
     pub components: Vec<Box<dyn PhysicsComponent>>,
@@ -41,9 +40,9 @@ impl App {
         let particles_clone = self.particles.clone();
 
         for particle in &mut self.particles {
-            for constraint in &self.components {
-                if constraint.allow(particle) {
-                    constraint.apply(particle, &particles_clone, args.dt);
+            for component in &self.components {
+                if component.allow(particle) {
+                    component.apply(particle, &particles_clone, args.dt);
                 }
 
                 particle.update_position(args.dt);

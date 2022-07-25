@@ -32,7 +32,6 @@ fn main() {
 
     let mut app = App {
         gl: GlGraphics::new(opengl),
-        rotation: 0.0,
         particles,
         world_scale: scale,
         components: vec![
