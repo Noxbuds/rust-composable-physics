@@ -1,12 +1,18 @@
+use std::sync::mpsc::Sender;
+
 use crate::particle::{Particle};
 
 pub mod gravity;
 pub mod floor;
 pub mod circle_walls;
+pub mod spawner;
 
 pub trait PhysicsComponent {
     fn allow(&self, _particle: &Particle) -> bool {
         true
     }
-    fn apply(&self, particle: &mut Particle, all_particles: &[Particle], dt: f64);
+
+    fn apply(&self, _particle: &mut Particle, _all_particles: &[Particle], _dt: f64) {}
+
+    fn update_system(&mut self, _dt: f64, _particle_channel: &Sender<Particle>) {}
 }

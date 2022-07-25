@@ -1,3 +1,4 @@
+use crate::particle::Particle;
 use super::PhysicsComponent;
 
 pub struct Floor {
@@ -5,7 +6,7 @@ pub struct Floor {
 }
 
 impl PhysicsComponent for Floor {
-    fn apply(&self, particle: &mut crate::particle::Particle, _all_particles: &[crate::particle::Particle], _: f64) {
+    fn apply(&self, particle: &mut Particle, _all_particles: &[Particle], _: f64) {
         let edge_y = particle.position.y + particle.radius;
 
         if edge_y > self.y {

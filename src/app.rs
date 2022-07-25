@@ -1,3 +1,5 @@
+use std::sync::mpsc::{Sender, Receiver};
+
 use opengl_graphics::GlGraphics;
 use piston::{RenderArgs, UpdateArgs};
 
@@ -7,6 +9,7 @@ use crate::utils::Vec2;
 pub struct App {
     pub gl: GlGraphics,
     pub particles: Vec<Particle>,
+    pub particle_channel: (Sender<Particle>, Receiver<Particle>),
     pub world_scale: f64,
     pub components: Vec<Box<dyn PhysicsComponent>>,
 }
@@ -38,6 +41,7 @@ impl App {
 
     pub fn update(&mut self, args: &UpdateArgs) {
         let particles_clone = self.particles.clone();
+        let (sender, receiver) = &self.particle_channel;
 
         for particle in &mut self.particles {
             for component in &self.components {
@@ -47,6 +51,14 @@ impl App {
 
                 particle.update_position(args.dt);
             }
+        }
+
+        for component in &mut self.components {
+            component.update_system(args.dt, sender);
+        }
+
+        for particle in receiver.try_iter() {
+            self.particles.push(particle);
         }
     }
 }
