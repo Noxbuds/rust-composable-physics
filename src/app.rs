@@ -35,7 +35,7 @@ impl App {
             for particle in &self.particles {
                 let position = world_to_screen(self.world_scale, particle.position);
                 
-                let rect = rectangle::square(position.x, position.y, particle.radius * 2.0 * self.world_scale);
+                let rect = rectangle::square(position.x - particle.radius, position.y - particle.radius, particle.radius * 2.0 * self.world_scale);
                 ellipse(particle.color, rect, c.transform, gl);
             }
         });
@@ -54,7 +54,6 @@ impl App {
                 component.update_system(dt, sender);
             }
         }
-
 
         for particle in receiver.try_iter() {
             self.particles.push(particle);
