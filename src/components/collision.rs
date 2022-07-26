@@ -10,10 +10,11 @@ impl PhysicsComponent for Collision {
         for i in 0..particles.len() {
             for j in i + 1..particles.len() {
                 let dir = particles[i].position - particles[j].position;
-                let dist = dir.len();
                 let radius_sum = particles[i].radius + particles[j].radius;
+                let sqr_dist = dir.sqr_len();
 
-                if dist < radius_sum {
+                if sqr_dist < radius_sum * radius_sum {
+                    let dist = sqr_dist.sqrt();
                     let axis = dir / dist;
                     let delta = radius_sum - dist;
 
