@@ -40,7 +40,7 @@ fn main() {
                     x: window_width as f64 * 0.5 / world_scale,
                     y: window_height as f64 * 0.5 / world_scale
                 },
-                radius: 320.0
+                radius: 400.0
             }),
             Box::new(Spawner {
                 timer: 0.0,
@@ -58,7 +58,7 @@ fn main() {
                 }),
                 get_velocity: Box::new(move |_| {
                     Vec2 {
-                        x: (random::<f64>() * 2.0 - 1.0) * 100.0,
+                        x: (random::<f64>() * 2.0 - 1.0) * 100.0 + 200.0,
                         y: 1500.0,
                     }
                 }),
@@ -69,6 +69,8 @@ fn main() {
             Box::new(Collision {}),
             Box::new(VerletIntegrator {}),
         ],
+        physics_dt: 0.0,
+        render_dt: 0.0,
     };
 
     
