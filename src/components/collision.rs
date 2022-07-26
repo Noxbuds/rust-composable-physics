@@ -6,17 +6,20 @@ pub struct Collision {
 }
 
 impl PhysicsComponent for Collision {
-    fn apply(&self, particle: &mut Particle, id: usize, all_particles: &[Particle], _dt: f64) {
-        for i in id + 1..all_particles.len() {
-            let other = all_particles[i];
-            let dir = particle.position - other.position;
-            let dist = dir.len();
+    fn apply(&self, particles: &mut Vec<Particle>, _dt: f64) {
+        for i in 0..particles.len() {
+            for j in i + 1..particles.len() {
+                let dir = particles[i].position - particles[j].position;
+                let dist = dir.len();
+                let radius_sum = particles[i].radius + particles[j].radius;
 
-            if dist < particle.radius + other.radius {
-                let axis = dir / dist;
-                let delta = particle.radius + other.radius - dist;
+                if dist < radius_sum {
+                    let axis = dir / dist;
+                    let delta = radius_sum - dist;
 
-                particle.position += axis * 0.5 * delta;
+                    particles[i].position += axis * 0.5 * delta;
+                    particles[j].position -= axis * 0.5 * delta;
+                }
             }
         }
     }

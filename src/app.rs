@@ -25,6 +25,7 @@ fn world_to_screen(world_scale: f64, world: Vec2) -> Vec2 {
 impl App {
     pub fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
+        // println!("timestep {} fps {}", args.ext_dt, 1.0 / args.ext_dt);
 
         const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
 
@@ -34,32 +35,26 @@ impl App {
             for particle in &self.particles {
                 let position = world_to_screen(self.world_scale, particle.position);
                 
-                let rect = rectangle::square(position.x, position.y, particle.radius * self.world_scale);
+                let rect = rectangle::square(position.x, position.y, particle.radius * 2.0 * self.world_scale);
                 ellipse(particle.color, rect, c.transform, gl);
             }
         });
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
-        let particles_clone = self.particles.clone();
         let (sender, receiver) = &self.particle_channel;
 
         let dt = args.dt / self.sub_steps as f64;
         for _ in 0..self.sub_steps {
-            for (i, particle) in self.particles.iter_mut().enumerate() {
-                for component in &self.components {
-                    if component.allow(particle) {
-                        component.apply(particle, i, &particles_clone, dt);
-                    }
-                }
+            for component in &self.components {
+                component.apply(&mut self.particles, dt);
+            }
 
-                particle.update_position(dt);
+            for component in &mut self.components {
+                component.update_system(dt, sender);
             }
         }
 
-        for component in &mut self.components {
-            component.update_system(args.dt, sender);
-        }
 
         for particle in receiver.try_iter() {
             self.particles.push(particle);

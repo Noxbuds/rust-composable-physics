@@ -8,8 +8,11 @@ pub struct Gravity {
 }
 
 impl PhysicsComponent for Gravity {
-    fn apply(&self, particle: &mut Particle, _: usize, _: &[Particle], _: f64) {
+    fn apply(&self, particles: &mut Vec<Particle>, _dt: f64) {
         let acc = Vec2 { x: self.strength.x, y: self.strength.y };
-        particle.add_acceleration(acc);
+
+        for particle in particles {
+            particle.add_acceleration(acc);
+        }
     }
 }

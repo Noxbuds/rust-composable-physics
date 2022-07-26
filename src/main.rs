@@ -4,7 +4,7 @@ use opengl_graphics::{GlGraphics, OpenGL};
 use utils::Vec2;
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
 use glutin_window::GlutinWindow;
-use components::{gravity::Gravity, circle_walls::CircleWalls, spawner::Spawner, collision::Collision};
+use components::{gravity::Gravity, circle_walls::CircleWalls, spawner::Spawner, collision::Collision, integrator::VerletIntegrator};
 
 mod app;
 mod particle;
@@ -41,20 +41,28 @@ fn main() {
                 },
                 radius: 320.0
             }),
-            Box::new(Spawner::new(
-                2,
-                2.0,
-                Box::new(move |_| {
+            Box::new(Spawner {
+                timer: 0.0,
+                count: 2500,
+                spawn_time: 0.02,
+                get_spawn_point: Box::new(move |_| {
                     Vec2 {
-                        x: window_width as f64 * 0.5 / world_scale + 280.0,
+                        x: window_width as f64 * 0.5 / world_scale + 20.0,
                         y: window_height as f64 * 0.5 / world_scale
                     }
                 }),
-                Box::new(|_| {
-                    40.0
-                })
-            )),
-            // Box::new(Collision {})
+                get_radius: Box::new(|_| {
+                    2.0
+                }),
+                get_velocity: Box::new(move |_| {
+                    Vec2 {
+                        x: 0.0,
+                        y: 1000.0,
+                    }
+                }),
+            }),
+            Box::new(Collision {}),
+            Box::new(VerletIntegrator {}),
         ],
     };
 

@@ -6,11 +6,13 @@ pub struct Floor {
 }
 
 impl PhysicsComponent for Floor {
-    fn apply(&self, particle: &mut Particle, _: usize, _all_particles: &[Particle], _: f64) {
-        let edge_y = particle.position.y + particle.radius;
-
-        if edge_y > self.y {
-            particle.position.y -= edge_y - self.y;
+    fn apply(&self, particles: &mut Vec<Particle>, _dt: f64) {
+        for particle in particles {
+            let edge_y = particle.position.y + particle.radius;
+    
+            if edge_y > self.y {
+                particle.position.y -= edge_y - self.y;
+            }
         }
     }
 }
