@@ -1,17 +1,20 @@
-use std::collections::HashMap;
+use std::{sync::mpsc, collections::HashMap};
 use app::App;
+use component::Component;
+use entity::Entity;
 use opengl_graphics::{GlGraphics, OpenGL};
 use utils::Vec2;
 use rand::random;
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
 use glutin_window::GlutinWindow;
-use systems::{gravity::Gravity, circle_walls::CircleWalls, spawner::Spawner, collision::Collision, integrator::VerletIntegrator};
+use components::{gravity::Gravity, circle_walls::CircleWalls, spawner::Spawner, collision::Collision, integrator::VerletIntegrator, position::Position};
 
 mod app;
 mod particle;
 mod entity;
 mod components;
-mod systems;
+mod component;
+mod system;
 mod utils;
 
 fn main() {
@@ -27,11 +30,21 @@ fn main() {
         .build()
         .unwrap();
 
+    let mut test_entity = Entity::new(0);
+    let test_position = Position { x: 1.0, y: 2.0 };
+    Position::attach(&mut test_entity, test_position);
 
+    let mut entities: HashMap<i32, Entity> = HashMap::new();
+    entities.insert(test_entity.id, test_entity);
+    
     let mut app = App {
         gl: GlGraphics::new(opengl),
-        entities: HashMap::new(),
-        systems: vec![
+        particles: Vec::new(),
+        particle_channel: mpsc::channel(),
+        entities,
+        world_scale,
+        sub_steps: 8,
+        components: vec![
             Box::new(Gravity {
                 strength: Vec2 { x: 0.0, y: 160.0 }
             }), 
@@ -69,8 +82,6 @@ fn main() {
             Box::new(Collision {}),
             Box::new(VerletIntegrator {}),
         ],
-        world_scale,
-        sub_steps: 8,
         physics_dt: 0.0,
         render_dt: 0.0,
     };

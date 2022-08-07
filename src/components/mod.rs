@@ -1,11 +1,21 @@
-use crate::entity::Entity;
+use std::sync::mpsc::Sender;
 
+use crate::particle::{Particle};
+
+pub mod gravity;
+pub mod floor;
+pub mod circle_walls;
+pub mod spawner;
+pub mod collision;
+pub mod integrator;
 pub mod position;
-pub mod acceleration;
-pub mod circle_collider;
 
-pub trait Component<T> {
-    fn attach(entity: &mut Entity, component: T, id: i32);
-    fn get(entity: &Entity, id: i32) -> Option<T>;
-    fn get_property_key(id: i32, field: i32) -> i32;
+pub trait PhysicsComponent {
+    fn allow(&self, _particle: &Particle) -> bool {
+        true
+    }
+
+    fn apply(&self, _particles: &mut Vec<Particle>, _dt: f64) {}
+
+    fn update_system(&mut self, _dt: f64, _particle_channel: &Sender<Particle>) {}
 }
