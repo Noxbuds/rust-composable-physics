@@ -1,4 +1,3 @@
-use std::sync::mpsc;
 use app::App;
 use opengl_graphics::{GlGraphics, OpenGL};
 use simulation::Simulation;
@@ -27,50 +26,38 @@ fn main() {
         .build()
         .unwrap();
     
-    let simulation = Simulation {
-        particles: Vec::new(),
-        particle_channel: mpsc::channel(),
-        world_scale,
-        sub_steps: 8,
-        components: vec![
-            Box::new(Gravity {
-                strength: Vec2 { x: 0.0, y: 160.0 }
-            }), 
-            Box::new(CircleWalls {
-                center: Vec2 {
-                    x: window_width as f64 * 0.5 / world_scale,
-                    y: window_height as f64 * 0.5 / world_scale
-                },
-                radius: 400.0
+    let simulation = Simulation::new(world_scale, 8)
+        .add_component(Box::new(Gravity {
+            strength: Vec2 { x: 0.0, y: 160.0 }
+        }))
+        .add_component(Box::new(CircleWalls {
+            center: Vec2 { x: window_width as f64, y: window_height as f64 } * 0.5 / world_scale,
+            radius: 400.0,
+        }))
+        .add_component(Box::new(Spawner {
+            timer: 0.0,
+            count: 5000,
+            spawn_time: 0.03,
+            get_spawn_point: Box::new(move |_| {
+                let center = Vec2 { x: window_width as f64, y: window_height as f64 } * 0.5 / world_scale;
+                center + Vec2 { x: 20.0, y: -200.0 } 
             }),
-            Box::new(Spawner {
-                timer: 0.0,
-                count: 10000,
-                spawn_time: 0.03,
-                get_spawn_point: Box::new(move |_| {
-                    Vec2 {
-                        x: window_width as f64 * 0.5 / world_scale + 20.0,
-                        y: window_height as f64 * 0.5 / world_scale - 200.0
-                    }
-                }),
-                get_radius: Box::new(move |_| {
-                    let roll = random::<f64>();
-                    2.0 + roll * 8.0
-                }),
-                get_velocity: Box::new(move |_| {
-                    Vec2 {
-                        x: (random::<f64>() * 2.0 - 1.0) * 100.0 + 200.0,
-                        y: 1500.0,
-                    }
-                }),
-                get_color: Box::new(move |_| {
-                    [random(), random(), random(), 1.0]
-                }),
+            get_radius: Box::new(move |_| {
+                let roll = random::<f64>();
+                2.0 + roll * 8.0
             }),
-            Box::new(Collision {}),
-            Box::new(VerletIntegrator {}),
-        ],
-    };
+            get_velocity: Box::new(move |_| {
+                Vec2 {
+                    x: (random::<f64>() * 2.0 - 1.0) * 100.0 + 200.0,
+                    y: 1500.0,
+                }
+            }),
+            get_color: Box::new(move |_| {
+                [random(), random(), random(), 1.0]
+            }),
+        }))
+        .add_component(Box::new(Collision {}))
+        .add_component(Box::new(VerletIntegrator {}));
 
     let mut app = App {
         gl: GlGraphics::new(opengl),
