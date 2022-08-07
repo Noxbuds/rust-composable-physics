@@ -8,7 +8,6 @@ pub mod circle_walls;
 pub mod spawner;
 pub mod collision;
 pub mod integrator;
-pub mod position;
 
 pub trait PhysicsComponent {
     fn allow(&self, _particle: &Particle) -> bool {

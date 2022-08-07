@@ -1,16 +1,15 @@
-use std::{sync::mpsc::{Sender, Receiver}, collections::HashMap};
+use std::sync::mpsc::{Sender, Receiver};
 
 use opengl_graphics::{GlGraphics, GlyphCache, TextureSettings};
 use piston::{RenderArgs, UpdateArgs};
 
-use crate::{particle::{Particle}, components::PhysicsComponent, entity::Entity};
+use crate::{particle::{Particle}, components::PhysicsComponent};
 use crate::utils::Vec2;
 
 pub struct App {
     pub gl: GlGraphics,
     pub particles: Vec<Particle>,
     pub particle_channel: (Sender<Particle>, Receiver<Particle>),
-    pub entities: HashMap<i32, Entity>,
     pub world_scale: f64,
     pub sub_steps: i32,
     pub components: Vec<Box<dyn PhysicsComponent>>,
