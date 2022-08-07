@@ -1,19 +1,12 @@
-use std::sync::mpsc::{Sender, Receiver};
-
 use opengl_graphics::{GlGraphics, GlyphCache, TextureSettings};
 use piston::{RenderArgs, UpdateArgs};
 
-use crate::{particle::{Particle}, components::PhysicsComponent};
+use crate::simulation::Simulation;
 use crate::utils::Vec2;
 
 pub struct App {
     pub gl: GlGraphics,
-    pub particles: Vec<Particle>,
-    pub particle_channel: (Sender<Particle>, Receiver<Particle>),
-    pub world_scale: f64,
-    pub sub_steps: i32,
-    pub components: Vec<Box<dyn PhysicsComponent>>,
-    pub physics_dt: f64,
+    pub simulation: Simulation,
     pub render_dt: f64,
 }
 
@@ -29,10 +22,9 @@ impl App {
         use graphics::*;
         const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
 
-        let timestep_text = format!("timestep: {:.1} ms", self.physics_dt * 1000.0);
         let frame_time_text = format!("frame time: {:.1} ms", self.render_dt * 1000.0);
-        let particle_count = format!("particle count: {:.1}", self.particles.len());
-        let stats = vec![timestep_text, frame_time_text, particle_count];
+        let particle_count = format!("particle count: {:.1}", self.simulation.particles.len());
+        let stats = vec![frame_time_text, particle_count];
 
         let font_size = 32;
         let text_gap: f64 = 12.0;
@@ -48,11 +40,11 @@ impl App {
             }
         });
         
-        for particle in &self.particles {
+        for particle in &self.simulation.particles {
             self.gl.draw(args.viewport(), |c, gl| {
-                let position = world_to_screen(self.world_scale, particle.position);
+                let position = world_to_screen(self.simulation.world_scale, particle.position);
                 
-                let rect = rectangle::square(position.x - particle.radius, position.y - particle.radius, particle.radius * 2.0 * self.world_scale);
+                let rect = rectangle::square(position.x - particle.radius, position.y - particle.radius, particle.radius * 2.0 * self.simulation.world_scale);
                 ellipse(particle.color, rect, c.transform, gl);
             });
         }
@@ -61,23 +53,6 @@ impl App {
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
-        let (sender, receiver) = &self.particle_channel;
-
-        let dt = args.dt / self.sub_steps as f64;
-        for _ in 0..self.sub_steps {
-            for component in &self.components {
-                component.apply(&mut self.particles, dt);
-            }
-
-            for component in &mut self.components {
-                component.update_system(dt, sender);
-            }
-        }
-
-        for particle in receiver.try_iter() {
-            self.particles.push(particle);
-        }
-
-        self.physics_dt = args.dt;
+        self.simulation.update(args.dt);
     }
 }

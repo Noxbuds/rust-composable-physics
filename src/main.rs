@@ -1,6 +1,7 @@
 use std::sync::mpsc;
 use app::App;
 use opengl_graphics::{GlGraphics, OpenGL};
+use simulation::Simulation;
 use utils::Vec2;
 use rand::random;
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
@@ -11,6 +12,7 @@ mod app;
 mod particle;
 mod components;
 mod utils;
+mod simulation;
 
 fn main() {
     let opengl = OpenGL::V3_2;
@@ -24,9 +26,8 @@ fn main() {
         .exit_on_esc(true)
         .build()
         .unwrap();
-
-    let mut app = App {
-        gl: GlGraphics::new(opengl),
+    
+    let simulation = Simulation {
         particles: Vec::new(),
         particle_channel: mpsc::channel(),
         world_scale,
@@ -69,7 +70,11 @@ fn main() {
             Box::new(Collision {}),
             Box::new(VerletIntegrator {}),
         ],
-        physics_dt: 0.0,
+    };
+
+    let mut app = App {
+        gl: GlGraphics::new(opengl),
+        simulation,
         render_dt: 0.0,
     };
 
