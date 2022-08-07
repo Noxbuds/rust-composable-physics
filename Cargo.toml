@@ -1,5 +1,5 @@
 [package]
-name = "rust-particle-simulation"
+name = "rust-composable-physics"
 version = "0.1.0"
 edition = "2021"
 
