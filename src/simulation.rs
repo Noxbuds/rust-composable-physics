@@ -36,7 +36,7 @@ impl Simulation {
             }
 
             for component in &mut self.components {
-                component.update_system(dt, sender);
+                component.update_system(dt, sender, &self.particles);
             }
         }
 

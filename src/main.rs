@@ -5,7 +5,7 @@ use utils::Vec2;
 use rand::random;
 use piston::{WindowSettings, EventSettings, Events, RenderEvent, UpdateEvent};
 use glutin_window::GlutinWindow;
-use components::{gravity::Gravity, circle_walls::CircleWalls, spawner::Spawner, collision::Collision, integrator::VerletIntegrator};
+use components::{gravity::Gravity, circle_walls::CircleWalls, spawner::Spawner, collision::{Collision, Quad}, integrator::VerletIntegrator};
 
 mod app;
 mod particle;
@@ -56,7 +56,14 @@ fn main() {
                 [random(), random(), random(), 1.0]
             }),
         }))
-        .add_component(Box::new(Collision {}))
+        .add_component(Box::new(Collision {
+            tree: Quad {
+                dimensions: [0.0, 0.0, window_width as f64 / world_scale, window_height as f64 / world_scale],
+                children: None,
+                particle_ids: vec![],
+                max_particles: 10
+            }
+        }))
         .add_component(Box::new(VerletIntegrator {}));
 
     let mut app = App {

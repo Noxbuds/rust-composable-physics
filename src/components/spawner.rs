@@ -17,7 +17,7 @@ pub struct Spawner {
 }
 
 impl PhysicsComponent for Spawner {
-    fn update_system(&mut self, dt: f64, particle_channel: &Sender<Particle>) {
+    fn update_system(&mut self, dt: f64, particle_channel: &Sender<Particle>, _particles: &Vec<Particle>) {
         self.timer += dt;
 
         if self.timer >= self.spawn_time && self.count > 0 {

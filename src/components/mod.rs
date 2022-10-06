@@ -16,5 +16,5 @@ pub trait PhysicsComponent {
 
     fn apply(&self, _particles: &mut Vec<Particle>, _dt: f64) {}
 
-    fn update_system(&mut self, _dt: f64, _particle_channel: &Sender<Particle>) {}
+    fn update_system(&mut self, _dt: f64, _particle_channel: &Sender<Particle>, _particles: &Vec<Particle>) {}
 }
